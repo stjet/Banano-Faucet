@@ -13,6 +13,8 @@ const banano = require('./banano.js')
 
 const app = express();
 
+app.use(express.static('files'))
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
@@ -108,6 +110,10 @@ app.post('/', async function (req, res) {
     errors = "captcha incorrect or faucet dry"
   }
   return res.send(swig.renderFile("./templates/index.html", {errors: errors, address: address, given: given, amount: amount}));
+})
+
+app.get('/game', function (req, res) {
+  return res.send(swig.renderFile("./templates/game.html"));
 })
 
 app.listen(8081, () => {
