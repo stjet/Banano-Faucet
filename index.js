@@ -1,19 +1,38 @@
 const swig = require('swig');
 const express = require('express');
-const axios = require('axios')
+const axios = require('axios');
 
-const Database = require("@replit/database")
+//const Database = require("@replit/database");
 
-const db = new Database()
+//const db = new Database();
 
 const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 
-const banano = require('./banano.js')
+const banano = require('./banano.js');
+const mongo = require('./database.js');
+
+let db = mongo.getDb();
+let collection;
+//collection.find({}).forEach(console.dir)
+db.then((db) => {collection = db.collection("collection"); 
+});
+
+function insert(addr,value) {
+  collection.insertOne({"address":addr,"value":value});
+}
+
+function update(addr,newvalue) {
+  collection.updateOne({"address":addr}, {"address":addr,"value":newvalue});
+}
+
+function find(addr) {
+  return collection.findOne({"address":addr});
+}
 
 const app = express();
 
-app.use(express.static('files'))
+app.use(express.static('files'));
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
@@ -50,7 +69,8 @@ app.post('/', async function (req, res) {
     //check cookie
     if (req.cookies['last_claim']){
       if (Number(req.cookies['last_claim'])+86400000 < Date.now()) {
-        let db_result = await db.get(address);
+        //let db_result = await db.get(address);
+        let db_result = find(address)["value"];
         if (db_result) {
           if (Number(db_result)+86400000 < Date.now()) {
             //all clear, send bananos!
@@ -59,21 +79,22 @@ app.post('/', async function (req, res) {
               errors = "Invalid address"
             } else {
               res.cookie('last_claim', String(Date.now()));
-              await db.set(address,String(Date.now()));
+              //await db.set(address,String(Date.now()));
+              update(address,String(Date.now()));
               given = true;
             }
           } else {
             errors = "Last claim too soon"
           }
         } else {
-          await db.set(address,String(Date.now()));
           //all clear, send bananos!
           send = await banano.send_banano(address, amount);
           if (send == false) {
             errors = "Invalid address"
           } else {
             res.cookie('last_claim', String(Date.now()));
-            await db.set(address,String(Date.now()));
+            //await db.set(address,String(Date.now()));
+            insert(address,String(Date.now()));
             given = true;
           }
         }
@@ -83,7 +104,8 @@ app.post('/', async function (req, res) {
       }
     } else {
       //check db 
-      let db_result = await db.get(address);
+      //let db_result = await db.get(address);
+      let db_result = find(address)["value"];
       if (db_result) {
         if (Number(db_result)+86400000 < Date.now()) {
           //all clear, send bananos!
@@ -92,7 +114,8 @@ app.post('/', async function (req, res) {
             errors = "Invalid address"
           } else {
             res.cookie('last_claim', String(Date.now()));
-            await db.set(address,String(Date.now()));
+            //await db.set(address,String(Date.now()));
+            update(address,String(Date.now()));
             given = true;
           }
         } else {
@@ -105,7 +128,8 @@ app.post('/', async function (req, res) {
           errors = "Invalid address"
         } else {
           res.cookie('last_claim', String(Date.now()));
-          await db.set(address,String(Date.now()));
+          //await db.set(address,String(Date.now()));
+          insert(address,String(Date.now()));
           given = true;
         }
       }
