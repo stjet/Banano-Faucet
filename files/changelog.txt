@@ -2,3 +2,4 @@
 
 5/18/21
 -Switched DB from Repl DB to MongoDB
+-Fixed several bugs 

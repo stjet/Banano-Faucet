@@ -16,17 +16,18 @@
       <p>{{ amount }} Banano has been sent to address {{ address }}</p>
       <p>Donations to ban_3346kkobb11qqpo17imgiybmwrgibr7yi34mwn5j6uywyke8f7fnfp94uyps keep the faucet running! Please donate.</p>
       <p>Fun fact! If the faucet has more than 100 bananos, payouts will increase. Also, I'm working on a game <a href="/game">(click here)</a> about banano.</p>
+      <b>Current Faucet Balance: {{ current_bal }}</b>
     {% else %}
       {% if errors %}
         {{ errors }}
       {% endif %}
       <form method="POST" action="/">
-        <p>Hi! Please donate to the faucet: ban_3346kkobb11qqpo17imgiybmwrgibr7yi34mwn5j6uywyke8f7fnfp94uyps</p>
+        <p>Hi! Please donate to the faucet: ban_3346kkobb11qqpo17imgiybmwrgibr7yi34mwn5j6uywyke8f7fnfp94uyps.</p>
         Banano Address: <input id="address" type="text" name="addr">
         <div class="h-captcha" data-sitekey="9e25731c-b4b7-4ccf-a454-72f303c04a9f"></div>
         <button type="submit">Get Free Banano</button>
       </form>
+      <b><a href="https://banano.cc/">What is Banano and how do I get a Banano Address?</a></b>
     {% endif %}
-    <b><a href="https://banano.cc/">What is Banano and how do I get a Banano Address?</a></b>
   </body>
 </html>

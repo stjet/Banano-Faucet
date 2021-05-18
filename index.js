@@ -141,7 +141,7 @@ app.post('/', async function (req, res) {
   } else {
     errors = "captcha incorrect or faucet dry"
   }
-  return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount}));
+  return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal)}));
 })
 
 app.get('/game', function (req, res) {
