@@ -1,6 +1,6 @@
-const swig = require('swig');
 const express = require('express');
 const axios = require('axios');
+const nunjucks = require('nunjucks');
 
 //const Database = require("@replit/database");
 
@@ -17,6 +17,9 @@ let collection;
 //collection.find({}).forEach(console.dir)
 db.then((db) => {collection = db.collection("collection"); 
 });
+
+nunjucks.configure('templates', { autoescape: true });
+
 
 function insert(addr,value) {
   collection.insertOne({"address":addr,"value":value});
@@ -45,7 +48,7 @@ app.get('/', function (req, res) {
   let given = false;
   let amount = 0;
   //render template 
-  return res.send(swig.renderFile("./templates/index.html", {errors: errors, address: address, given: given, amount: amount}));
+  return res.send(nunjucks.render('index.html', {errors: errors, address: address, given: given, amount: amount}));
 })
 
 app.post('/', async function (req, res) {
@@ -137,11 +140,11 @@ app.post('/', async function (req, res) {
   } else {
     errors = "captcha incorrect or faucet dry"
   }
-  return res.send(swig.renderFile("./templates/index.html", {errors: errors, address: address, given: given, amount: amount}));
+  return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount}));
 })
 
 app.get('/game', function (req, res) {
-  return res.send(swig.renderFile("./templates/game.html"));
+  return res.send(nunjucks.render("game.html"));
 })
 
 app.listen(8081, () => {
