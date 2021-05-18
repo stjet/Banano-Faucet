@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 
 app.use(cookieParser());
 
-app.get('/', async function (req, res) {
+app.get('/', function (req, res) {
   let errors = false;
   let address = false;
   let given = false;
