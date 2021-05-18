@@ -20,13 +20,12 @@ db.then((db) => {collection = db.collection("collection");
 
 nunjucks.configure('templates', { autoescape: true });
 
-
 async function insert(addr,value) {
   await collection.insertOne({"address":addr,"value":value});
 }
 
-async function update(addr,newvalue) {
-  await collection.updateOne({"address":addr}, {"address":addr,"value":newvalue});
+async function replace(addr,newvalue) {
+  await collection.replaceOne({"address":addr}, {"address":addr,"value":newvalue});
 }
 
 async function find(addr) {
@@ -42,7 +41,7 @@ app.use(bodyParser.json());
 
 app.use(cookieParser());
 
-app.get('/', function (req, res) {
+app.get('/', async function (req, res) {
   let errors = false;
   let address = false;
   let given = false;
@@ -69,10 +68,8 @@ app.post('/', async function (req, res) {
   captcha_resp = captcha_resp.data;
   let dry = await banano.faucet_dry()
   if (captcha_resp['success'] && !dry) {
-    console.log("a")
     //check cookie
     if (req.cookies['last_claim']){
-      console.log("b")
       if (Number(req.cookies['last_claim'])+86400000 < Date.now()) {
         //let db_result = await db.get(address);
         let db_result = await find(address);
@@ -86,7 +83,7 @@ app.post('/', async function (req, res) {
             } else {
               res.cookie('last_claim', String(Date.now()));
               //await db.set(address,String(Date.now()));
-              await update(address,String(Date.now()));
+              await replace(address,String(Date.now()));
               given = true;
             }
           } else {
@@ -122,7 +119,7 @@ app.post('/', async function (req, res) {
           } else {
             res.cookie('last_claim', String(Date.now()));
             //await db.set(address,String(Date.now()));
-            await update(address,String(Date.now()));
+            await replace(address,String(Date.now()));
             given = true;
           }
         } else {
