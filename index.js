@@ -33,7 +33,7 @@ app.post('/', async function (req, res) {
   let errors = false;
   let address = false;
   let given = false;
-  let amount = (Math.floor(Math.random()*9)/100)+0.01;
+  let amount = (Math.floor(Math.random()*9)/100)+0.02;
   let token = req.body['h-captcha-response'];
   address = req.body['addr'];
   let params = new URLSearchParams();
