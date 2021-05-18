@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 
 app.use(cookieParser());
 
-app.get('/', function (req, res) {
+app.get('/', async function (req, res) {
   let errors = false;
   let address = false;
   let given = false;
@@ -33,7 +33,11 @@ app.post('/', async function (req, res) {
   let errors = false;
   let address = false;
   let given = false;
-  let amount = (Math.floor(Math.random()*9)/100)+0.02;
+  let amount = (Math.floor(Math.random()*8)/100)+0.02;
+  let current_bal = await banano.check_bal("ban_3346kkobb11qqpo17imgiybmwrgibr7yi34mwn5j6uywyke8f7fnfp94uyps");
+  if (Number(current_bal) > 100) {
+    amount = (Math.floor(Math.random()*12)/100)+0.03;
+  }
   let token = req.body['h-captcha-response'];
   address = req.body['addr'];
   let params = new URLSearchParams();

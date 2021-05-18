@@ -26,5 +26,6 @@ async function faucet_dry() {
 
 module.exports = {
   send_banano: send_banano,
-  faucet_dry: faucet_dry
+  faucet_dry: faucet_dry,
+  check_bal: check_bal
 }
