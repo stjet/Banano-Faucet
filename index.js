@@ -21,16 +21,16 @@ db.then((db) => {collection = db.collection("collection");
 nunjucks.configure('templates', { autoescape: true });
 
 
-function insert(addr,value) {
-  collection.insertOne({"address":addr,"value":value});
+async function insert(addr,value) {
+  await collection.insertOne({"address":addr,"value":value});
 }
 
-function update(addr,newvalue) {
-  collection.updateOne({"address":addr}, {"address":addr,"value":newvalue});
+async function update(addr,newvalue) {
+  await collection.updateOne({"address":addr}, {"address":addr,"value":newvalue});
 }
 
-function find(addr) {
-  return collection.findOne({"address":addr});
+async function find(addr) {
+  return await collection.findOne({"address":addr});
 }
 
 const app = express();
@@ -69,12 +69,15 @@ app.post('/', async function (req, res) {
   captcha_resp = captcha_resp.data;
   let dry = await banano.faucet_dry()
   if (captcha_resp['success'] && !dry) {
+    console.log("a")
     //check cookie
     if (req.cookies['last_claim']){
+      console.log("b")
       if (Number(req.cookies['last_claim'])+86400000 < Date.now()) {
         //let db_result = await db.get(address);
-        let db_result = find(address)["value"];
+        let db_result = await find(address);
         if (db_result) {
+          db_result = db_result['value'];
           if (Number(db_result)+86400000 < Date.now()) {
             //all clear, send bananos!
             send = await banano.send_banano(address, amount);
@@ -83,7 +86,7 @@ app.post('/', async function (req, res) {
             } else {
               res.cookie('last_claim', String(Date.now()));
               //await db.set(address,String(Date.now()));
-              update(address,String(Date.now()));
+              await update(address,String(Date.now()));
               given = true;
             }
           } else {
@@ -97,7 +100,7 @@ app.post('/', async function (req, res) {
           } else {
             res.cookie('last_claim', String(Date.now()));
             //await db.set(address,String(Date.now()));
-            insert(address,String(Date.now()));
+            await insert(address,String(Date.now()));
             given = true;
           }
         }
@@ -108,8 +111,9 @@ app.post('/', async function (req, res) {
     } else {
       //check db 
       //let db_result = await db.get(address);
-      let db_result = find(address)["value"];
+      let db_result = await find(address);
       if (db_result) {
+        db_result = db_result['value'];
         if (Number(db_result)+86400000 < Date.now()) {
           //all clear, send bananos!
           send = await banano.send_banano(address, amount);
@@ -118,7 +122,7 @@ app.post('/', async function (req, res) {
           } else {
             res.cookie('last_claim', String(Date.now()));
             //await db.set(address,String(Date.now()));
-            update(address,String(Date.now()));
+            await update(address,String(Date.now()));
             given = true;
           }
         } else {
@@ -132,7 +136,7 @@ app.post('/', async function (req, res) {
         } else {
           res.cookie('last_claim', String(Date.now()));
           //await db.set(address,String(Date.now()));
-          insert(address,String(Date.now()));
+          await insert(address,String(Date.now()));
           given = true;
         }
       }
