@@ -32,6 +32,12 @@ async function find(addr) {
   return await collection.findOne({"address":addr});
 }
 
+let ip_cache = {};
+function clearCache() {
+  ip_cache = {};
+}
+setInterval(clearCache, 172800000);
+
 const app = express();
 
 app.use(express.static('files'));
@@ -67,6 +73,19 @@ app.post('/', async function (req, res) {
   let captcha_resp = await axios.post('https://hcaptcha.com/siteverify', params)
   captcha_resp = captcha_resp.data;
   let dry = await banano.faucet_dry()
+
+  let ip = req.header('x-forwarded-for').slice(0,14);
+  console.log(ip)
+  if (ip_cache[ip]) {
+    ip_cache[ip] = ip_cache[ip]+1
+    if (ip_cache[ip] > 5) {
+      errors = "Too many claims from this IP"
+      return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal)}));
+    }
+  } else {
+    ip_cache[ip] = 1
+  }
+
   if (captcha_resp['success'] && !dry) {
     //check cookie
     if (req.cookies['last_claim']){
