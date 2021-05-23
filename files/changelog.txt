@@ -3,3 +3,4 @@
 5/18/21
 -Switched DB from Repl DB to MongoDB
 -Fixed several bugs 
+-simple ip check to prevent spamming

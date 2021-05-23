@@ -36,7 +36,7 @@ let ip_cache = {};
 function clearCache() {
   ip_cache = {};
 }
-setInterval(clearCache, 172800000);
+setInterval(clearCache, 150000000);
 
 const app = express();
 
@@ -75,10 +75,9 @@ app.post('/', async function (req, res) {
   let dry = await banano.faucet_dry()
 
   let ip = req.header('x-forwarded-for').slice(0,14);
-  console.log(ip)
   if (ip_cache[ip]) {
     ip_cache[ip] = ip_cache[ip]+1
-    if (ip_cache[ip] > 5) {
+    if (ip_cache[ip] > 4) {
       errors = "Too many claims from this IP"
       return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal)}));
     }
