@@ -36,7 +36,7 @@ let ip_cache = {};
 function clearCache() {
   ip_cache = {};
 }
-setInterval(clearCache, 150000000);
+setInterval(clearCache, 145000000);
 
 const app = express();
 
@@ -60,7 +60,7 @@ app.post('/', async function (req, res) {
   let errors = false;
   let address = false;
   let given = false;
-  let amount = (Math.floor(Math.random()*8)/100)+0.02;
+  let amount = (Math.floor(Math.random()*8)/100)+0.01;
   let current_bal = await banano.check_bal("ban_3346kkobb11qqpo17imgiybmwrgibr7yi34mwn5j6uywyke8f7fnfp94uyps");
   if (Number(current_bal) > 100) {
     amount = (Math.floor(Math.random()*12)/100)+0.03;
