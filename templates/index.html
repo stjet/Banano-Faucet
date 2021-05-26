@@ -10,20 +10,21 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Cantarell:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-    <link href="../styles/style.css" rel="stylesheet" type="text/css" />
+    <link href="/style.css" rel="stylesheet" type="text/css" />
     <script src="https://hcaptcha.com/1/api.js" async defer></script>
   </head>
   <body>
     <header>
-      <img src="../files/LOGO.png" alt="">
+      <img src="/LOGO.png" alt="">
     </header>
       <main id=#main>
       <br>
       {% if given %}
         <p>Come back in 24 hours to claim Banano again!</p>
         <p>{{ amount }} Banano has been sent to address {{ address }}</p>
-        <p>Donations to ban_3346kkobb11qqpo17imgiybmwrgibr7yi34mwn5j6uywyke8f7fnfp94uyps keep the faucet running! Please donate.</p>
-        <!-- <p>Fun fact! If the faucet has more than 100 bananos, payouts will increase. Also, I'm working on a game <a href="/game">(click here)</a> about banano.</p> -->
+        <p>Donations to ban_3346kkobb11qqpo17imgiybmwrgibr7yi34mwn5j6uywyke8f7fnfp94uyps keep the faucet running! Please donate. If the faucet has more than 100 bananos, payouts will increase.</p>
+        <p>Fun fact! If the faucet has more than 100 bananos, payouts will increase.
+        <!-- Also, I'm working on a game <a href="/game">(click here)</a> about banano.</p> -->
         <b>Current Faucet Balance: {{ current_bal }}</b>
       {% else %}
         {% if errors %}
