@@ -1,0 +1,131 @@
+/* Ape Lincoln for President */
+
+header {
+  height: 250px;
+  width: 100%;
+  margin-top: -1px;
+  background-position: bottom;
+  background-repeat: repeat;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-image: url(../files/Header\ Background.png);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+header img {
+  margin-top: 1%;
+  width: 33%;
+  max-width: 400px;
+  height: auto;
+  min-width: 225px;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cantarell', sans-serif;
+  margin: 0 !important;
+  background-color: #212124;
+  overflow: wrap;
+  color:#FBDD11;
+}
+
+main {
+  padding-bottom: 19px;
+}
+
+@media(min-width: 768px) {
+  main {
+    width: 50%;
+  }
+}
+
+@media(max-width: 767px) {
+  main {
+    width: 80%;
+  }
+}
+
+p {
+  /* These are technically the same, but use both */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  -ms-word-break: break-all;
+  /* This is the dangerous one in WebKit, as it breaks things wherever */
+  word-break: break-all;
+  /* Instead use this non-standard one: */
+  word-break: break-word;
+}
+
+
+.address-input {
+  padding-bottom: 18px;
+}
+
+.btn-container {
+  width: 67%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+button {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+  margin: 0;
+  font-family: inherit;
+  overflow: visible;
+  text-transform: none;
+  -webkit-appearance: button;
+  box-shadow: 0 7px 0 0 #e6c910!important;
+  width: 100%!important;
+  margin-top: 18px;
+  margin-bottom: 1.5rem!important;
+  font-weight: 700!important;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  user-select: none;
+  border: 1px solid transparent;
+  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out,-webkit-box-shadow .15s ease-in-out;
+  color: #212529;
+  background-color: #fbdd11;
+  border-color: #fbdd11;
+  padding: .5rem 1rem;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  border-radius: .3rem;
+  white-space: normal;
+  cursor: pointer;
+}
+
+footer {
+  width: 100%;
+  background-color: #4CBF4B;
+  height: 69px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+a,
+a:hover,
+a:visited {
+  color: #fbdd11;
+  font-weight: 700;
+}
+
+footer p a,
+footer p a:hover,
+footer p a:visited {
+  color: #fbdd11;
+  font-weight: 700;
+}
