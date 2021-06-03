@@ -162,10 +162,6 @@ app.post('/', async function (req, res) {
   return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal)}));
 })
 
-app.get('/game', function (req, res) {
-  return res.send(nunjucks.render("game.html"));
-})
-
 app.listen(8081, () => {
   console.log(`App on`)
 })
