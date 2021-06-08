@@ -24,8 +24,13 @@ async function faucet_dry() {
   return false;
 }
 
+async function recieve_deposits() {
+  await bananojs.receiveBananoDepositsForSeed(process.env.seed, 0, bananojs.getBananoAccountFromSeed(process.env.seed, 0));
+}
+
 module.exports = {
   send_banano: send_banano,
   faucet_dry: faucet_dry,
-  check_bal: check_bal
+  check_bal: check_bal,
+  recieve_deposits: recieve_deposits
 }
