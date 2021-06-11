@@ -77,7 +77,7 @@ app.post('/', async function (req, res) {
   let ip = req.header('x-forwarded-for').slice(0,14);
   if (ip_cache[ip]) {
     ip_cache[ip] = ip_cache[ip]+1
-    if (ip_cache[ip] > 4) {
+    if (ip_cache[ip] > 3) {
       errors = "Too many claims from this IP"
       return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal)}));
     }
