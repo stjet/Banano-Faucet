@@ -32,12 +32,6 @@ async function find(addr) {
   return await collection.findOne({"address":addr});
 }
 
-let ip_cache = {};
-function clearCache() {
-  ip_cache = {};
-}
-setInterval(clearCache, 145000000);
-
 const app = express();
 
 app.use(express.static('files'));
@@ -46,6 +40,14 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 app.use(cookieParser());
+
+let ip_cache = {};
+function clearCache() {
+  ip_cache = {};
+}
+setInterval(clearCache, 145000000);
+
+const blacklist = ["ban_3qyp5xjybqr1go8xb1847tr6e1ujjxdrc4fegt1rzhmcmbtntio385n35nju","ban_118s5dp14cxmwkr8tuwosqrgzduzzoqhsxws5cjxrm3trksmf7kte1b3qxmb","ban_17xxqwmidqa8dq9eet3txheapkj719b9xko6cxummothbpwtfo5q5e1iap3w","ban_377wt3dw9e7dayixoecjytf5ezniz6yoq5g1j41szbcqffn5ah5pehtatzye","ban_1i773cuq35ouc7w7ee96rctgqtmrgqwoqh5cznod8ddus4561ngoxntz9njw","ban_1oknxoyqq3iom9f5xbhyt6w6m86bhd638nzttms6fmj4z4cusyn18kp1x735","ban_17xxqwmidqa8dq9eet3txheapkj719b9xko6cxummothbpwtfo5q5e1iap3w"];
 
 app.get('/', async function (req, res) {
   let errors = false;
@@ -73,6 +75,11 @@ app.post('/', async function (req, res) {
   let captcha_resp = await axios.post('https://hcaptcha.com/siteverify', params)
   captcha_resp = captcha_resp.data;
   let dry = await banano.faucet_dry()
+
+  if (blacklist.includes(address)) {
+    errors = "This address is blacklisted because it is creating many addresses and cheating the faucet by claiming multiple times in a day. If you think this is a mistake message me (u/prussia_dev) on reddit."
+    return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal)}));
+  }
 
   let ip = req.header('x-forwarded-for').slice(0,14);
   if (ip_cache[ip]) {
