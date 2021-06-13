@@ -24,6 +24,16 @@ async function faucet_dry() {
   return false;
 }
 
+async function address_related_to_blacklist(address, blacklisted_addresses) {
+  let account_history = await bananojs.getAccountHistory(address, -1);
+  for (let i=0; i < account_history.history.length; i++) {
+    if (account_history.history[i].type == "send" && blacklisted_addresses.includes(account_history.history[i].account)) {
+      return true
+    }
+  }
+  return false
+}
+ 
 async function recieve_deposits() {
   await bananojs.receiveBananoDepositsForSeed(process.env.seed, 0, bananojs.getBananoAccountFromSeed(process.env.seed, 0));
 }
@@ -32,5 +42,6 @@ module.exports = {
   send_banano: send_banano,
   faucet_dry: faucet_dry,
   check_bal: check_bal,
-  recieve_deposits: recieve_deposits
+  recieve_deposits: recieve_deposits,
+  address_related_to_blacklist: address_related_to_blacklist
 }
