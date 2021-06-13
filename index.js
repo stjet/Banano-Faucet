@@ -78,7 +78,7 @@ app.post('/', async function (req, res) {
   captcha_resp = captcha_resp.data;
   let dry = await banano.faucet_dry()
 
-  if (banano.address_related_to_blacklist(address, blacklist) || blacklist.includes(address)) {
+  if (await banano.address_related_to_blacklist(address, blacklist) || blacklist.includes(address)) {
     errors = "This address is blacklisted because it is cheating and farming faucets. If you think this is a mistake message me (u/prussia_dev) on reddit."
     return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal)}));
   }
