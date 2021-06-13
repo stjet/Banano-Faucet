@@ -172,6 +172,6 @@ app.post('/', async function (req, res) {
 })
 
 app.listen(8081, () => {
-  banano.recieve_deposits()
+  banano.recieve_deposits();
   console.log(`App on`)
 })

@@ -35,7 +35,7 @@ async function address_related_to_blacklist(address, blacklisted_addresses) {
 }
  
 async function recieve_deposits() {
-  await bananojs.receiveBananoDepositsForSeed(process.env.seed, 0, bananojs.getBananoAccountFromSeed(process.env.seed, 0));
+  await bananojs.receiveBananoDepositsForSeed(process.env.seed, 0, await bananojs.getBananoAccountFromSeed(process.env.seed, 0));
 }
 
 module.exports = {
