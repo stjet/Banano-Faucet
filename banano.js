@@ -34,7 +34,7 @@ async function address_related_to_blacklist(address, blacklisted_addresses) {
     }
     return false
   } else {
-    return true
+    return false
   }
 }
  
