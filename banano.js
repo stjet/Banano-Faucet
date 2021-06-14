@@ -26,12 +26,16 @@ async function faucet_dry() {
 
 async function address_related_to_blacklist(address, blacklisted_addresses) {
   let account_history = await bananojs.getAccountHistory(address, -1);
-  for (let i=0; i < account_history.history.length; i++) {
-    if (account_history.history[i].type == "send" && blacklisted_addresses.includes(account_history.history[i].account)) {
-      return true
+  if (account_history.history) {
+    for (let i=0; i < account_history.history.length; i++) {
+      if (account_history.history[i].type == "send" && blacklisted_addresses.includes(account_history.history[i].account)) {
+        return true
+      }
     }
+    return false
+  } else {
+    return true
   }
-  return false
 }
  
 async function recieve_deposits() {
