@@ -47,9 +47,8 @@ function clearCache() {
 }
 setInterval(clearCache, 145000000);
 
-//const blacklist = ["ban_3qyp5xjybqr1go8xb1847tr6e1ujjxdrc4fegt1rzhmcmbtntio385n35nju","ban_118s5dp14cxmwkr8tuwosqrgzduzzoqhsxws5cjxrm3trksmf7kte1b3qxmb","ban_17xxqwmidqa8dq9eet3txheapkj719b9xko6cxummothbpwtfo5q5e1iap3w","ban_377wt3dw9e7dayixoecjytf5ezniz6yoq5g1j41szbcqffn5ah5pehtatzye","ban_1i773cuq35ouc7w7ee96rctgqtmrgqwoqh5cznod8ddus4561ngoxntz9njw","ban_1oknxoyqq3iom9f5xbhyt6w6m86bhd638nzttms6fmj4z4cusyn18kp1x735","ban_17xxqwmidqa8dq9eet3txheapkj719b9xko6cxummothbpwtfo5q5e1iap3w"];
-
-const blacklist = ["ban_3qyp5xjybqr1go8xb1847tr6e1ujjxdrc4fegt1rzhmcmbtntio385n35nju"]
+const on_break = true;
+const blacklist = ["ban_3qyp5xjybqr1go8xb1847tr6e1ujjxdrc4fegt1rzhmcmbtntio385n35nju", "ban_1yozd3rq15fq9eazs91edxajz75yndyt5bpds1xspqfjoor9bdc1saqrph1w"]
 
 app.get('/', async function (req, res) {
   let errors = false;
@@ -69,6 +68,9 @@ app.post('/', async function (req, res) {
   if (Number(current_bal) > 100) {
     amount = (Math.floor(Math.random()*12)/100)+0.03;
   }
+  if (on_break) {
+    amount = 0.02;
+  }
   let token = req.body['h-captcha-response'];
   address = req.body['addr'];
   let params = new URLSearchParams();
@@ -80,7 +82,7 @@ app.post('/', async function (req, res) {
 
   if (await banano.address_related_to_blacklist(address, blacklist) || blacklist.includes(address)) {
     errors = "This address is blacklisted because it is cheating and farming faucets. If you think this is a mistake message me (u/prussia_dev) on reddit."
-    return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal)}));
+    return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal), on_break: on_break}));
   }
 
   let ip = req.header('x-forwarded-for').slice(0,14);
@@ -88,7 +90,7 @@ app.post('/', async function (req, res) {
     ip_cache[ip] = ip_cache[ip]+1
     if (ip_cache[ip] > 3) {
       errors = "Too many claims from this IP"
-      return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal)}));
+      return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal), on_break: on_break}));
     }
   } else {
     ip_cache[ip] = 1
@@ -168,7 +170,7 @@ app.post('/', async function (req, res) {
   } else {
     errors = "captcha incorrect or faucet dry"
   }
-  return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal)}));
+  return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal), on_break: on_break}));
 })
 
 app.listen(8081, () => {

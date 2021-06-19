@@ -20,10 +20,14 @@
       <main id=#main>
       <br>
       {% if given %}
-        <p>Come back in 24 hours to claim Banano again!</p>
-        <p>{{ amount }} Banano has been sent to address {{ address }}</p>
-        <p>Donations to ban_3346kkobb11qqpo17imgiybmwrgibr7yi34mwn5j6uywyke8f7fnfp94uyps keep the faucet running! Please donate. If the faucet has more than 100 bananos, payouts will increase.</p>
-        <p>Also, I'm working on a social media site called <a href="https://www.reddit.com/r/banano/comments/nr1qvx/howler_social_media_platform_on_banano_concept_art/">Howler</a> that will be based on the Banano blockchain!</p>
+        {% if on_break %}
+          <p>Hello! I am on break, so to prevent the faucet from going dry, payouts are set to 0.2 bans. Please continue to feel free to donate</p>
+        {% else %}
+          <p>Come back in 24 hours to claim Banano again!</p>
+          <p>{{ amount }} Banano has been sent to address {{ address }}</p>
+          <p>Donations to ban_3346kkobb11qqpo17imgiybmwrgibr7yi34mwn5j6uywyke8f7fnfp94uyps keep the faucet running! Please donate. If the faucet has more than 100 bananos, payouts will increase.</p>
+          <p>Also, I'm working on a social media site called <a href="https://www.reddit.com/r/banano/comments/nr1qvx/howler_social_media_platform_on_banano_concept_art/">Howler</a> that will be based on the Banano blockchain!</p>
+        {% endif %}
         <b>Current Faucet Balance: {{ current_bal }}</b>
         <p>Also, a big thank you to our sponsor:</p>
         <center>
