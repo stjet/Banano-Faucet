@@ -12,6 +12,9 @@ async function send_banano(addr, amount) {
 
 async function check_bal(addr) {
   let raw_bal = await bananojs.getAccountBalanceRaw(addr);
+  if (!raw_bal) {
+    console.log(raw_bal)
+  }
   let bal_parts = await bananojs.getBananoPartsFromRaw(raw_bal);
   return bal_parts.banano
 }
@@ -37,6 +40,14 @@ async function address_related_to_blacklist(address, blacklisted_addresses) {
     return false
   }
 }
+
+async function is_unopened(address) {
+  let account_history = await bananojs.getAccountHistory(address, -1);
+  if (account_history.history == '') {
+    return true
+  }
+  return false
+}
  
 async function recieve_deposits() {
   await bananojs.receiveBananoDepositsForSeed(process.env.seed, 0, await bananojs.getBananoAccountFromSeed(process.env.seed, 0));
@@ -47,5 +58,6 @@ module.exports = {
   faucet_dry: faucet_dry,
   check_bal: check_bal,
   recieve_deposits: recieve_deposits,
-  address_related_to_blacklist: address_related_to_blacklist
+  address_related_to_blacklist: address_related_to_blacklist,
+  is_unopened: is_unopened
 }

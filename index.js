@@ -47,8 +47,14 @@ function clearCache() {
 }
 setInterval(clearCache, 145000000);
 
+//If I am on break this is true. Reduces faucet payouts to 0.02
 const on_break = true;
-const blacklist = ["ban_3qyp5xjybqr1go8xb1847tr6e1ujjxdrc4fegt1rzhmcmbtntio385n35nju", "ban_1yozd3rq15fq9eazs91edxajz75yndyt5bpds1xspqfjoor9bdc1saqrph1w"]
+//If this is true, logs info
+const logging = false;
+//If this is true, no unopened accounts can claim
+const no_unopened = true;
+
+const blacklist = ["ban_3qyp5xjybqr1go8xb1847tr6e1ujjxdrc4fegt1rzhmcmbtntio385n35nju", "ban_1yozd3rq15fq9eazs91edxajz75yndyt5bpds1xspqfjoor9bdc1saqrph1w", "ban_1894qgm8jym5xohwkngsy5czixajk5apxsjowi83pz9g6zrfo1nxo4mmejm9"]
 
 app.get('/', async function (req, res) {
   let errors = false;
@@ -85,6 +91,11 @@ app.post('/', async function (req, res) {
     return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal), on_break: on_break}));
   }
 
+  if (await banano.is_unopened(address) && no_unopened) {
+    errors = "Hello! Currently unopened accounts are not allowed to claim, because the faucet is under attack. We apologize to legitimate users."
+    return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal), on_break: on_break}));
+  }
+
   let ip = req.header('x-forwarded-for').slice(0,14);
   if (ip_cache[ip]) {
     ip_cache[ip] = ip_cache[ip]+1
@@ -94,6 +105,11 @@ app.post('/', async function (req, res) {
     }
   } else {
     ip_cache[ip] = 1
+  }
+
+  if (logging) {
+    console.log(address)
+    console.log(req.header('x-forwarded-for'))
   }
 
   if (captcha_resp['success'] && !dry) {
