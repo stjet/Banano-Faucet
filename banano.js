@@ -12,9 +12,6 @@ async function send_banano(addr, amount) {
 
 async function check_bal(addr) {
   let raw_bal = await bananojs.getAccountBalanceRaw(addr);
-  if (!raw_bal) {
-    console.log(raw_bal)
-  }
   let bal_parts = await bananojs.getBananoPartsFromRaw(raw_bal);
   return bal_parts.banano
 }
