@@ -54,7 +54,7 @@ const logging = false;
 //If this is true, no unopened accounts can claim
 const no_unopened = true;
 
-const blacklist = ["ban_3qyp5xjybqr1go8xb1847tr6e1ujjxdrc4fegt1rzhmcmbtntio385n35nju", "ban_1yozd3rq15fq9eazs91edxajz75yndyt5bpds1xspqfjoor9bdc1saqrph1w", "ban_1894qgm8jym5xohwkngsy5czixajk5apxsjowi83pz9g6zrfo1nxo4mmejm9"]
+const blacklist = ["ban_3qyp5xjybqr1go8xb1847tr6e1ujjxdrc4fegt1rzhmcmbtntio385n35nju", "ban_1yozd3rq15fq9eazs91edxajz75yndyt5bpds1xspqfjoor9bdc1saqrph1w", "ban_1894qgm8jym5xohwkngsy5czixajk5apxsjowi83pz9g6zrfo1nxo4mmejm9", "ban_38jyaej59qs5x3zim7t4pw5dwixibkjw48tg1t3i9djyhtjf3au7c599bmg3", "ban_3a68aqticd6wup99zncicrbkuaonypzzkfmmn66bxexfmw1ckf3ewo3fmtm9"]
 
 app.get('/', async function (req, res) {
   let errors = false;
@@ -86,8 +86,9 @@ app.post('/', async function (req, res) {
   captcha_resp = captcha_resp.data;
   let dry = await banano.faucet_dry()
 
-  if (await banano.address_related_to_blacklist(address, blacklist) || blacklist.includes(address)) {
-    errors = "This address is blacklisted because it is cheating and farming faucets. If you think this is a mistake message me (u/prussia_dev) on reddit."
+  let account_history = await banano.get_account_history(address);
+  if (banano.address_related_to_blacklist(address, account_history, blacklist) || blacklist.includes(address)) {
+    errors = "This address is blacklisted because it is cheating and farming faucets (or sent money to an address participating in cheating). If you think this is a mistake message me (u/prussia_dev) on reddit."
     return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal), on_break: on_break}));
   }
 
