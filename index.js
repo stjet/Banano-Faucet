@@ -54,6 +54,8 @@ const logging = false;
 //If this is true, no unopened accounts can claim
 const no_unopened = true;
 
+const faucet_addr = "ban_3346kkobb11qqpo17imgiybmwrgibr7yi34mwn5j6uywyke8f7fnfp94uyps";
+
 const blacklist = ["ban_3qyp5xjybqr1go8xb1847tr6e1ujjxdrc4fegt1rzhmcmbtntio385n35nju", "ban_1yozd3rq15fq9eazs91edxajz75yndyt5bpds1xspqfjoor9bdc1saqrph1w", "ban_1894qgm8jym5xohwkngsy5czixajk5apxsjowi83pz9g6zrfo1nxo4mmejm9", "ban_38jyaej59qs5x3zim7t4pw5dwixibkjw48tg1t3i9djyhtjf3au7c599bmg3", "ban_3a68aqticd6wup99zncicrbkuaonypzzkfmmn66bxexfmw1ckf3ewo3fmtm9"]
 
 app.get('/', async function (req, res) {
@@ -70,7 +72,7 @@ app.post('/', async function (req, res) {
   let address = false;
   let given = false;
   let amount = (Math.floor(Math.random()*8)/100)+0.01;
-  let current_bal = await banano.check_bal("ban_3346kkobb11qqpo17imgiybmwrgibr7yi34mwn5j6uywyke8f7fnfp94uyps");
+  let current_bal = await banano.check_bal(faucet_addr);
   if (Number(current_bal) > 100) {
     amount = (Math.floor(Math.random()*12)/100)+0.03;
   }
@@ -87,8 +89,9 @@ app.post('/', async function (req, res) {
   let dry = await banano.faucet_dry()
 
   let account_history = await banano.get_account_history(address);
-  if (banano.address_related_to_blacklist(address, account_history, blacklist) || blacklist.includes(address)) {
-    errors = "This address is blacklisted because it is cheating and farming faucets (or sent money to an address participating in cheating). If you think this is a mistake message me (u/prussia_dev) on reddit."
+  if (banano.address_related_to_blacklist(account_history, blacklist) || blacklist.includes(address)) {
+    console.log(address)
+    errors = "This address is blacklisted because it is cheating and farming faucets (or sent money to an address participating in cheating and farming). If you think this is a mistake message me (u/prussia_dev) on reddit. If you are a legitimate user impacted by this, please use a different address."
     return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal), on_break: on_break}));
   }
 

@@ -34,7 +34,7 @@ async function faucet_dry() {
   return false;
 }
 
-function address_related_to_blacklist(address, account_history, blacklisted_addresses) {
+function address_related_to_blacklist(account_history, blacklisted_addresses) {
   if (account_history.history) {
     for (let i=0; i < account_history.history.length; i++) {
       if (account_history.history[i].type == "send" && blacklisted_addresses.includes(account_history.history[i].account)) {
