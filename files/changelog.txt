@@ -1,6 +1,0 @@
-(Note this was started much before 5/18/21 but I haven't bothered to try and keep track of it)
-
-5/18/21
--Switched DB from Repl DB to MongoDB
--Fixed several bugs 
--simple ip check to prevent spamming

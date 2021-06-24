@@ -52,7 +52,7 @@ const on_break = true;
 //If this is true, logs info
 const logging = false;
 //If this is true, no unopened accounts can claim
-const no_unopened = true;
+const no_unopened = false;
 
 const faucet_addr = "ban_3346kkobb11qqpo17imgiybmwrgibr7yi34mwn5j6uywyke8f7fnfp94uyps";
 
@@ -69,18 +69,17 @@ app.get('/', async function (req, res) {
 
 app.post('/', async function (req, res) {
   let errors = false;
-  let address = false;
+  let address = req.body['addr'];
   let given = false;
   let amount = (Math.floor(Math.random()*8)/100)+0.01;
   let current_bal = await banano.check_bal(faucet_addr);
   if (Number(current_bal) > 100) {
     amount = (Math.floor(Math.random()*12)/100)+0.03;
   }
-  if (on_break) {
+  if (on_break || await banano.is_unopened(address)) {
     amount = 0.02;
   }
   let token = req.body['h-captcha-response'];
-  address = req.body['addr'];
   let params = new URLSearchParams();
   params.append('response', token);
   params.append('secret', process.env.secret);
