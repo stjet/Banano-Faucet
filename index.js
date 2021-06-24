@@ -76,8 +76,11 @@ app.post('/', async function (req, res) {
   if (Number(current_bal) > 100) {
     amount = (Math.floor(Math.random()*12)/100)+0.03;
   }
-  if (on_break || await banano.is_unopened(address)) {
+  if (on_break) {
     amount = 0.02;
+  }
+  if (await banano.is_unopened(address)) {
+    amount = 0.01;
   }
   let token = req.body['h-captcha-response'];
   let params = new URLSearchParams();
