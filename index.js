@@ -48,7 +48,7 @@ function clearCache() {
 setInterval(clearCache, 145000000);
 
 //If I am on break this is true. Reduces faucet payouts to 0.02
-const on_break = true;
+const on_break = false;
 //If this is true, logs info
 const logging = false;
 //If this is true, no unopened accounts can claim

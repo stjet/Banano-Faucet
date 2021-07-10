@@ -17,12 +17,6 @@ async function get_account_history(addr) {
 async function check_bal(addr) {
   let raw_bal = await bananojs.getAccountBalanceRaw(addr);
   let bal_parts = await bananojs.getBananoPartsFromRaw(raw_bal);
-  //DEBUGGING PURPOSES, REMOVE AFTER ERROR FIXED
-  if (!bal_parts) {
-    console.log(addr)
-    console.log(raw_bal)
-    console.log(bal_parts)
-  }
   return bal_parts.banano
 }
 
