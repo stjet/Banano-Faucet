@@ -59,12 +59,13 @@ const faucet_addr = "ban_3346kkobb11qqpo17imgiybmwrgibr7yi34mwn5j6uywyke8f7fnfp9
 const blacklist = ["ban_3qyp5xjybqr1go8xb1847tr6e1ujjxdrc4fegt1rzhmcmbtntio385n35nju", "ban_1yozd3rq15fq9eazs91edxajz75yndyt5bpds1xspqfjoor9bdc1saqrph1w", "ban_1894qgm8jym5xohwkngsy5czixajk5apxsjowi83pz9g6zrfo1nxo4mmejm9", "ban_38jyaej59qs5x3zim7t4pw5dwixibkjw48tg1t3i9djyhtjf3au7c599bmg3", "ban_3a68aqticd6wup99zncicrbkuaonypzzkfmmn66bxexfmw1ckf3ewo3fmtm9"]
 
 app.get('/', async function (req, res) {
+
   let errors = false;
   let address = false;
   let given = false;
   let amount = 0;
   //render template 
-  return res.send(nunjucks.render('index.html', {errors: errors, address: address, given: given, amount: amount}));
+  return res.send(nunjucks.render('index.html', {errors: errors, address: address, given: given, amount: amount, faucet_addr: faucet_addr}));
 })
 
 app.post('/', async function (req, res) {
@@ -93,13 +94,13 @@ app.post('/', async function (req, res) {
   let account_history = await banano.get_account_history(address);
   if (banano.address_related_to_blacklist(account_history, blacklist) || blacklist.includes(address)) {
     console.log(address)
-    errors = "This address is blacklisted because it is cheating and farming faucets (or sent money to an address participating in cheating and farming). If you think this is a mistake message me (u/prussia_dev) on reddit. If you are a legitimate user impacted by this, please use a different address."
-    return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal), on_break: on_break}));
+    errors = "This address is blacklisted because it is cheating and farming faucets (or sent money to an address participating in cheating and farming). If you think this is a mistake message me (u/prussia_dev) on reddit. If you are a legitimate user impacted by this, please use a different address or try again."
+    return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal), on_break: on_break, faucet_addr: faucet_addr}));
   }
 
   if (await banano.is_unopened(address) && no_unopened) {
     errors = "Hello! Currently unopened accounts are not allowed to claim, because the faucet is under attack. We apologize to legitimate users."
-    return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal), on_break: on_break}));
+    return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal), on_break: on_break, faucet_addr: faucet_addr}));
   }
 
   let ip = req.header('x-forwarded-for').slice(0,14);
@@ -107,7 +108,7 @@ app.post('/', async function (req, res) {
     ip_cache[ip] = ip_cache[ip]+1
     if (ip_cache[ip] > 3) {
       errors = "Too many claims from this IP"
-      return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal), on_break: on_break}));
+      return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal), on_break: on_break, faucet_addr: faucet_addr}));
     }
   } else {
     ip_cache[ip] = 1
@@ -192,7 +193,7 @@ app.post('/', async function (req, res) {
   } else {
     errors = "captcha incorrect or faucet dry"
   }
-  return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal), on_break: on_break}));
+  return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal), on_break: on_break, faucet_addr: faucet_addr}));
 })
 
 app.listen(8081, () => {
