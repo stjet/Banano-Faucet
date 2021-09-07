@@ -41,11 +41,13 @@ app.use(bodyParser.json());
 
 app.use(cookieParser());
 
+const claim_freq = 86400000;
+
 let ip_cache = {};
 function clearCache() {
   ip_cache = {};
 }
-setInterval(clearCache, 145000000);
+setInterval(clearCache, claim_freq*1.3);
 
 //If I am on break this is true. Reduces faucet payouts to 0.02
 const on_break = false;
@@ -56,7 +58,7 @@ const no_unopened = false;
 
 const faucet_addr = "ban_3346kkobb11qqpo17imgiybmwrgibr7yi34mwn5j6uywyke8f7fnfp94uyps";
 
-const blacklist = ["ban_3qyp5xjybqr1go8xb1847tr6e1ujjxdrc4fegt1rzhmcmbtntio385n35nju", "ban_1yozd3rq15fq9eazs91edxajz75yndyt5bpds1xspqfjoor9bdc1saqrph1w", "ban_1894qgm8jym5xohwkngsy5czixajk5apxsjowi83pz9g6zrfo1nxo4mmejm9", "ban_38jyaej59qs5x3zim7t4pw5dwixibkjw48tg1t3i9djyhtjf3au7c599bmg3", "ban_3a68aqticd6wup99zncicrbkuaonypzzkfmmn66bxexfmw1ckf3ewo3fmtm9"]
+const blacklist = ["ban_3qyp5xjybqr1go8xb1847tr6e1ujjxdrc4fegt1rzhmcmbtntio385n35nju", "ban_1yozd3rq15fq9eazs91edxajz75yndyt5bpds1xspqfjoor9bdc1saqrph1w", "ban_1894qgm8jym5xohwkngsy5czixajk5apxsjowi83pz9g6zrfo1nxo4mmejm9", "ban_38jyaej59qs5x3zim7t4pw5dwixibkjw48tg1t3i9djyhtjf3au7c599bmg3", "ban_3a68aqticd6wup99zncicrbkuaonypzzkfmmn66bxexfmw1ckf3ewo3fmtm9", "ban_3f9j7bw9z71gwjo7bwgpfcmkg7k8w7y3whzc71881yrmpwz9e6c8g4gq4puj"]
 
 app.get('/', async function (req, res) {
 
@@ -122,12 +124,12 @@ app.post('/', async function (req, res) {
   if (captcha_resp['success'] && !dry) {
     //check cookie
     if (req.cookies['last_claim']){
-      if (Number(req.cookies['last_claim'])+86400000 < Date.now()) {
+      if (Number(req.cookies['last_claim'])+claim_freq < Date.now()) {
         //let db_result = await db.get(address);
         let db_result = await find(address);
         if (db_result) {
           db_result = db_result['value'];
-          if (Number(db_result)+86400000 < Date.now()) {
+          if (Number(db_result)+claim_freq < Date.now()) {
             //all clear, send bananos!
             send = await banano.send_banano(address, amount);
             if (send == false) {
@@ -163,7 +165,7 @@ app.post('/', async function (req, res) {
       let db_result = await find(address);
       if (db_result) {
         db_result = db_result['value'];
-        if (Number(db_result)+86400000 < Date.now()) {
+        if (Number(db_result)+claim_freq < Date.now()) {
           //all clear, send bananos!
           send = await banano.send_banano(address, amount);
           if (send == false) {
