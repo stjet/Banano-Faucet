@@ -1,0 +1,90 @@
+<html>
+  <head>
+    <!-- Ape Lincoln for President -->
+    <meta charset="utf-8">
+    <meta property="og:title" content="Prussia Banano Faucet">
+    <meta property="og:description" content="Earn Free Nano!">
+    <meta property="og:image" content="(nano image here)">
+    <meta name="viewport" content="width=device-width">
+    <title>Prussia Nano Faucet</title>
+    <script src="https://hcaptcha.com/1/api.js" async defer></script>
+    <link href="/nano.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <center>
+      <h1 id="title">Nano Faucet</h2>
+      {% if error %}
+        <p>{{ error }}</p>
+      {% endif %}
+      {% if success %}
+        <p>Success</p>
+      {% endif %}
+      <form method="POST" action="/nano" id="form">
+        <label for="address">Nano Address:</label><input id="address" type="text" name="addr">
+        <div class="h-captcha" data-sitekey="9e25731c-b4b7-4ccf-a454-72f303c04a9f"></div>
+        <button type="submit" id="get-btn">Get Free Nano</button>
+      </form>
+    </center>
+    <div class="expandables">
+      <div id="about-nano-container" class="expandable" onclick="toggle_expandable('about-nano')">
+        <div class="always-show-expandable">
+            <h1>About Nano <span id="about-nano-plus-minus" class="plus-minus">+</span></h1>
+        </div>
+        <div id="about-nano" class="expand-on-click">
+          <p>Nano is a <a href="https://www.investopedia.com/terms/c/cryptocurrency.asp">cryptocurrency that is feeless and fast (unlike others, such as bitcoin, which requires several minutes to send coins and can have high fees). You can set up a wallet and get an address <a href="https://nault.cc/">here</a>.</p>
+          <p>You can learn more <a href="https://docs.nano.org/what-is-nano/overview/">here</a>. Make sure to check out the <a href="https://reddit.com/r/nanocurrency">reddit</a>, <a href="https://t.me/nanocurrency">telegram</a> and <a href="https://chat.nano.org/">discord</a> communities.</p>
+        </div>
+      </div>
+    </div>
+    <div class="expandables">
+      <div id="about-faucet-container" class="expandable" onclick="toggle_expandable('about-faucet')">
+        <div class="always-show-expandable">
+            <h1>About Faucet <span id="about-faucet-plus-minus" class="plus-minus">+</span></h1>
+        </div>
+        <div id="about-faucet" class="expand-on-click">
+          <p>This faucet pays out 0.0002 Nano every day (24 hours min between claims. We rely on community donations so please, please, donate some nano to the faucet (address: nano_3346kkobb11qqpo17imgiybmwrgibr7yi34mwn5j6uywyke8f7fnfp94uyps).</p>
+        </div>
+      </div>
+    </div>
+    <div class="expandables">
+      <div id="about-banano-container" class="expandable" onclick="toggle_expandable('about-banano')">
+        <div class="always-show-expandable">
+            <h1>About Banano <span id="about-banano-plus-minus" class="plus-minus">+</span></h1>
+        </div>
+        <div id="about-banano" class="expand-on-click">
+          <p>Banano is a fork coin (has the same base code) as Nano, with the same feeless and fast technology but more emphasis of fun, teaching beginners, and community.</p>
+          <p>Learn more here <a href="https://banano.cc/"></a></p>
+        </div>
+      </div>
+    </div>
+    <div class="expandables">
+      <div id="support-creator-container" class="expandable" onclick="toggle_expandable('support-creator')">
+        <div class="always-show-expandable">
+            <h1>Support Creator <span id="support-creator-plus-minus" class="plus-minus">+</span></h1>
+        </div>
+        <div id="support-creator" class="expand-on-click">
+          <p>It took a lot of work to make and maintain the faucet, so please support my work by donating to me.</p>
+          <ul>
+            <li>Nano: nano_1o7ija3mdbmpzt8qfnck583tn99fiupgbyzxtbk5h4g6j57a7rawge6yzxqp</li>
+            <li>Ethereum: 0x100e6F9164ADf9C924EDc31bc89Ab8bc1E5db2dd</li>
+            <li>Bitcoin Cash: bitcoincash:qz6q9hqe9r2emrz83m8tg8j2mgqup2hztgvsgzk40k</li>
+            <li>Banano: ban_1o7ija3mdbmpzt8qfnck583tn99fiupgbyzxtbk5h4g6j57a7rawge6yzxqp</li>
+          </ul>
+          <p>Alternatively, you can check out some of my work, such as GoBanMe, a browser extension that allows you to tip banano to participating websites. You can download it for <a href="https://chrome.google.com/webstore/detail/gobanme/chcpbckfgpcogpgceecknjgcaicdonje">chrome and chrome based browsers</a> and for <a href="https://addons.mozilla.org/en-US/firefox/addon/gobanme">firefox</a>.</p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggle_expandable(id) {
+        if (document.getElementById(id+"-plus-minus").innerText == "+") {
+          document.getElementById(id+"-plus-minus").innerText = "-";
+          document.getElementById(id).style.display = "block";
+        } else {
+          document.getElementById(id+"-plus-minus").innerText = "+";
+          document.getElementById(id).style.display = "none";
+        }
+      }
+    </script>
+  </body>
+</html>

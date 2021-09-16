@@ -1,9 +1,9 @@
-const bananojs = require('bananojs');
-bananojs.setBananodeApiUrl('https://kaliumapi.appditto.com/api');
+const bananojs = require('nanojs');
+bananojs.setBananodeApiUrl('https://proxy.nanos.cc/proxy');
 
-async function send_banano(addr, amount) {
+async function send_nano(addr, amount) {
   try {
-    await bananojs.sendBananoWithdrawalFromSeed(process.env.seed, 0, addr, amount);
+    await bananojs.sendNanoWithdrawalFromSeed(process.env.seed, 0, addr, amount);
     return true;
   } catch (e) {
     return false;
@@ -16,13 +16,13 @@ async function get_account_history(addr) {
 
 async function check_bal(addr) {
   let raw_bal = await bananojs.getAccountBalanceRaw(addr);
-  let bal_parts = await bananojs.getBananoPartsFromRaw(raw_bal);
-  return bal_parts.banano
+  let bal_parts = await bananojs.getNanoPartsFromRaw(raw_bal);
+  return bal_parts
 }
 
 async function faucet_dry() {
-  let bal = await check_bal("ban_3346kkobb11qqpo17imgiybmwrgibr7yi34mwn5j6uywyke8f7fnfp94uyps");
-  if (Number(bal) < 1) {
+  let bal = await check_bal("nano_3346kkobb11qqpo17imgiybmwrgibr7yi34mwn5j6uywyke8f7fnfp94uyps");
+  if (Number(bal.nanoshi) < 1000) {
     return true;
   }
   return false;
@@ -48,11 +48,11 @@ async function is_unopened(address) {
 }
  
 async function recieve_deposits() {
-  await bananojs.receiveNanoDepositsForSeed(process.env.seed, 0, await bananojs.getNanoAccountFromSeed(process.env.seed, 0));
+  await bananojs.receiveBananoDepositsForSeed(process.env.seed, 0, await bananojs.getBananoAccountFromSeed(process.env.seed, 0));
 }
 
 module.exports = {
-  send_banano: send_banano,
+  send_nano: send_nano,
   faucet_dry: faucet_dry,
   check_bal: check_bal,
   recieve_deposits: recieve_deposits,

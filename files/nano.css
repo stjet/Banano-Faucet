@@ -1,0 +1,34 @@
+* {
+  font-family: verdana;
+}
+#expandables {
+  padding-top: 3%;
+  padding-left: 12.5%;
+  padding-right: 12.5%;
+  width: 75%;
+}
+.expandable {
+  cursor: pointer;
+  width: 100%;
+  border: black 2px solid;
+  border-radius: 4px;
+  margin-bottom: 1%;
+}
+.expand-on-click {
+  display: none;
+  padding-left: 5%;
+}
+.always-show-expandable {
+  text-align: center;
+}
+body {
+  padding-left: 10%;
+  padding-right: 10%;
+}
+#title {
+  font-size: 55px;
+}
+#get-btn {
+  width: 130px;
+  height: 40px;
+}
