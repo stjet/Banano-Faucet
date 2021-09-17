@@ -48,7 +48,7 @@ async function is_unopened(address) {
 }
  
 async function recieve_deposits() {
-  await bananojs.receiveBananoDepositsForSeed(process.env.seed, 0, await bananojs.getBananoAccountFromSeed(process.env.seed, 0));
+  await bananojs.receiveNanoDepositsForSeed(process.env.seed, 0, await bananojs.getNanoAccountFromSeed(process.env.seed, 0));
 }
 
 module.exports = {
