@@ -22,7 +22,7 @@ async function check_bal(addr) {
 
 async function faucet_dry() {
   let bal = await check_bal("nano_3346kkobb11qqpo17imgiybmwrgibr7yi34mwn5j6uywyke8f7fnfp94uyps");
-  if (Number(bal.nanoshi) < 1000) {
+  if (Number(bal.nanoshi) < 100) {
     return true;
   }
   return false;
