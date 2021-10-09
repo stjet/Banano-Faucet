@@ -33,6 +33,10 @@ async function find(addr) {
   return await collection.findOne({"address":addr});
 }
 
+async function count(query) {
+  return await collection.count(query);
+}
+
 const app = express();
 
 app.use(express.static('files'));
@@ -66,6 +70,9 @@ const faucet_addr = "ban_3346kkobb11qqpo17imgiybmwrgibr7yi34mwn5j6uywyke8f7fnfp9
 const faucet_addr_nano = "nano_3346kkobb11qqpo17imgiybmwrgibr7yi34mwn5j6uywyke8f7fnfp94uyps";
 
 const blacklist = ["ban_3qyp5xjybqr1go8xb1847tr6e1ujjxdrc4fegt1rzhmcmbtntio385n35nju", "ban_1yozd3rq15fq9eazs91edxajz75yndyt5bpds1xspqfjoor9bdc1saqrph1w", "ban_1894qgm8jym5xohwkngsy5czixajk5apxsjowi83pz9g6zrfo1nxo4mmejm9", "ban_38jyaej59qs5x3zim7t4pw5dwixibkjw48tg1t3i9djyhtjf3au7c599bmg3", "ban_3a68aqticd6wup99zncicrbkuaonypzzkfmmn66bxexfmw1ckf3ewo3fmtm9", "ban_3f9j7bw9z71gwjo7bwgpfcmkg7k8w7y3whzc71881yrmpwz9e6c8g4gq4puj", "ban_3rdjcqpm3j88bunqa3ge69nzdzx5a6nqumzc4ei3t1uwg3ciczw75xqxb4ac"]
+
+const nano_blacklist = ["nano_1or7xscday8pm91zjfnh5bsmsgo9t1rnci9ekopiuyfcmk3noa9oueo8zoeb"]
+
 
 app.get('/', async function (req, res) {
   let errors = false;
@@ -227,6 +234,11 @@ app.post('/nano', async function (req, res) {
   if (logging) {
     console.log(address)
     console.log(req.header('x-forwarded-for'))
+  }
+
+  let account_history = await nano.get_account_history(address);
+  if (nano.address_related_to_blacklist(account_history, nano_blacklist) || nano_blacklist.includes(address)) {
+    return res.send(nunjucks.render("nano.html", {error: "This address is blacklisted because it is cheating and farming faucets (or sent money to an address participating in cheating and farming).", success: false}));
   }
 
   let token = req.body['h-captcha-response'];

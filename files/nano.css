@@ -8,11 +8,13 @@
   width: 75%;
 }
 .expandable {
-  cursor: pointer;
   width: 100%;
   border: black 2px solid;
   border-radius: 4px;
   margin-bottom: 1%;
+}
+.expandable-title {
+  cursor: pointer;
 }
 .expand-on-click {
   display: none;
