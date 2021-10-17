@@ -118,6 +118,7 @@ app.post('/', async function (req, res) {
     return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal), on_break: on_break, faucet_addr: faucet_addr}));
   }
 
+  /*YOU PROBABLY WANT TO ENABLE THIS
   let ip = req.header('x-forwarded-for').slice(0,14);
   if (ip_cache[ip]) {
     ip_cache[ip] = ip_cache[ip]+1
@@ -128,6 +129,7 @@ app.post('/', async function (req, res) {
   } else {
     ip_cache[ip] = 1
   }
+  */
 
   if (logging) {
     console.log(address)
@@ -221,6 +223,7 @@ app.post('/nano', async function (req, res) {
   let current_bal = await nano.check_bal(faucet_addr_nano);
   let amount = 0.0002; 
 
+  /*YOU PROBABLY WANT TO ENABLE THIS
   let ip = req.header('x-forwarded-for').slice(0,14);
   if (nano_ip_cache[ip]) {
     nano_ip_cache[ip] = nano_ip_cache[ip]+1
@@ -230,6 +233,7 @@ app.post('/nano', async function (req, res) {
   } else {
     nano_ip_cache[ip] = 1
   }
+  */
 
   if (logging) {
     console.log(address)
