@@ -98,6 +98,11 @@ app.post('/', async function (req, res) {
   if (await banano.is_unopened(address)) {
     amount = 0.01;
   }
+  let valid = await banano.is_valid(address);
+  if (!valid) {
+    errors = "Invalid address"
+    return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal), on_break: on_break, faucet_addr: faucet_addr}));
+  }
   let token = req.body['h-captcha-response'];
   let params = new URLSearchParams();
   params.append('response', token);
@@ -148,7 +153,7 @@ app.post('/', async function (req, res) {
             //all clear, send bananos!
             send = await banano.send_banano(address, amount);
             if (send == false) {
-              errors = "Invalid address"
+              errors = "Send failed"
             } else {
               res.cookie('last_claim', String(Date.now()));
               //await db.set(address,String(Date.now()));
@@ -162,7 +167,7 @@ app.post('/', async function (req, res) {
           //all clear, send bananos!
           send = await banano.send_banano(address, amount);
           if (send == false) {
-            errors = "Invalid address"
+            errors = "Send failed"
           } else {
             res.cookie('last_claim', String(Date.now()));
             //await db.set(address,String(Date.now()));
@@ -245,6 +250,11 @@ app.post('/nano', async function (req, res) {
     return res.send(nunjucks.render("nano.html", {error: "This address is blacklisted because it is cheating and farming faucets (or sent money to an address participating in cheating and farming).", success: false}));
   }
 
+  let valid = await nano.is_valid(address);
+  if (!valid) {
+    return res.send(nunjucks.render("nano.html", {error: "Invalid address.", success: false}));
+  }
+
   let token = req.body['h-captcha-response'];
   let params = new URLSearchParams();
   params.append('response', token);
@@ -268,7 +278,7 @@ app.post('/nano', async function (req, res) {
       //send nanos
       send = await nano.send_nano(address, amount);
       if (send == false) {
-        return res.send(nunjucks.render('nano.html', {error: "Invalid address", success: false}));
+        return res.send(nunjucks.render('nano.html', {error: "Send failed", success: false}));
       }
       await replace(address,String(Date.now()));
       return res.send(nunjucks.render('nano.html', {error: false, success: true}));
@@ -277,14 +287,14 @@ app.post('/nano', async function (req, res) {
 
   send = await nano.send_nano(address, amount);
   if (send == false) {
-    return res.send(nunjucks.render('nano.html', {error: "Invalid address", success: false}));
+    return res.send(nunjucks.render('nano.html', {error: "Send failed", success: false}));
   }
   await insert(address,String(Date.now()));
   return res.send(nunjucks.render('nano.html', {error: false, success: true}));
 })
 
 app.listen(8081, () => {
-  banano.recieve_deposits();
-  nano.recieve_deposits();
+  banano.receive_deposits();
+  nano.receive_deposits();
   console.log(`App on`)
 })

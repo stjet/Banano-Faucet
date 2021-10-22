@@ -47,18 +47,23 @@ async function is_unopened(address) {
   return false
 }
  
-async function recieve_deposits() {
+async function receive_deposits() {
   let rep = await bananojs.getAccountInfo(await bananojs.getBananoAccountFromSeed(process.env.seed, 0), true);
   rep = rep.representative;
   await bananojs.receiveBananoDepositsForSeed(process.env.seed, 0, rep);
+}
+
+async function is_valid(address) {
+  return await bananojs.getBananoAccountValidationInfo(address).valid
 }
 
 module.exports = {
   send_banano: send_banano,
   faucet_dry: faucet_dry,
   check_bal: check_bal,
-  recieve_deposits: recieve_deposits,
+  receive_deposits: receive_deposits,
   address_related_to_blacklist: address_related_to_blacklist,
   is_unopened: is_unopened,
-  get_account_history: get_account_history
+  get_account_history: get_account_history,
+  is_valid: is_valid
 }
