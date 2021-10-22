@@ -22,7 +22,6 @@ async function check_bal(addr) {
 
 async function faucet_dry() {
   let bal = await check_bal("nano_3346kkobb11qqpo17imgiybmwrgibr7yi34mwn5j6uywyke8f7fnfp94uyps");
-  console.log(bal.nanoshi)
   if (Number(bal.nanoshi) < 200) {
     return true;
   }
@@ -49,7 +48,9 @@ async function is_unopened(address) {
 }
  
 async function recieve_deposits() {
-  await bananojs.receiveNanoDepositsForSeed(process.env.seed, 0, await bananojs.getNanoAccountFromSeed(process.env.seed, 0));
+  let rep = await bananojs.getAccountInfo(await bananojs.getNanoAccountFromSeed(process.env.seed, 0), true);
+  rep = rep.representative;
+  await bananojs.receiveNanoDepositsForSeed(process.env.seed, 0, rep);
 }
 
 module.exports = {
