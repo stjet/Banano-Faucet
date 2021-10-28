@@ -281,6 +281,8 @@ app.post('/nano', async function (req, res) {
       }
       await replace(address,String(Date.now()));
       return res.send(nunjucks.render('nano.html', {error: false, success: true}));
+    } else {
+      return res.send(nunjucks.render('nano.html', {error: "Last claim too soon", success: false}));
     }
   }
 
