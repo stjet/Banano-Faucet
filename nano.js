@@ -50,6 +50,11 @@ async function is_unopened(address) {
 async function receive_deposits() {
   let rep = await bananojs.getAccountInfo(await bananojs.getNanoAccountFromSeed(process.env.seed, 0), true);
   rep = rep.representative;
+  if (!rep) {
+    //set self as rep if no other set rep
+    await bananojs.receiveNanoDepositsForSeed(process.env.seed, 0, await bananojs.getNanoAccountFromSeed(process.env.seed, 0));
+    return
+  }
   await bananojs.receiveNanoDepositsForSeed(process.env.seed, 0, rep);
 }
 
