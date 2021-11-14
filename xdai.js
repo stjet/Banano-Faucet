@@ -8,7 +8,7 @@ wallet = wallet.connect(provider);
 
 async function send_xdai(addr, amount) {
   let transaction = {
-    to: addr,
+    to: addr.toLowerCase(),
     value: ethers.utils.parseEther(amount),
   };
   try {
