@@ -105,10 +105,12 @@ app.post('/', async function (req, res) {
   }
   if (await banano.is_unopened(address)) {
     amount = 0.01;
-    if (no_unopened) {
-      errors = "Hello! Currently unopened accounts are not allowed to claim, because the faucet is under attack. We apologize to legitimate users."
-      return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal), on_break: on_break, faucet_addr: faucet_addr}));
-    }
+  }
+  let today = new Date();
+  today = String(today.getMonth()+1)+"/"+String(today.getDate());
+  let halloween = ["10/30","10/31","11/1","11/2"];
+  if (halloween.includes(today)) {
+    amount = amount*2;
   }
   let token = req.body['h-captcha-response'];
   let params = new URLSearchParams();
@@ -116,6 +118,7 @@ app.post('/', async function (req, res) {
   params.append('secret', process.env.secret);
   let captcha_resp = await axios.post('https://hcaptcha.com/siteverify', params)
   captcha_resp = captcha_resp.data;
+  let dry = await banano.faucet_dry()
 
   let account_history = await banano.get_account_history(address);
   if (banano.address_related_to_blacklist(account_history, blacklist) || blacklist.includes(address)) {
@@ -124,12 +127,16 @@ app.post('/', async function (req, res) {
     return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal), on_break: on_break, faucet_addr: faucet_addr}));
   }
 
+  if (await banano.is_unopened(address) && no_unopened) {
+    errors = "Hello! Currently unopened accounts are not allowed to claim, because the faucet is under attack. We apologize to legitimate users."
+    return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal), on_break: on_break, faucet_addr: faucet_addr}));
+  }
+
   if (logging) {
     console.log(address)
     console.log(req.header('x-forwarded-for'))
   }
 
-  let dry = await banano.faucet_dry();
   if (dry) {
     errors = "Faucet dry"
     return res.send(nunjucks.render("index.html", {errors: errors, address: address, given: given, amount: amount, current_bal:String(current_bal), on_break: on_break, faucet_addr: faucet_addr}));
@@ -320,7 +327,7 @@ app.post('/xdai', async function (req, res) {
   let dry = await xdai.faucet_dry(faucet_addr_xdai);
 
   if (dry) {
-    return res.send(nunjucks.render('xdai.html', {error: "Last claim too soon", address: address, given: false, faucet_addr: faucet_addr_xdai}));
+    return res.send(nunjucks.render('xdai.html', {error: "Faucet dry", address: address, given: false, faucet_addr: faucet_addr_xdai}));
   }
 
   let db_result = await find(address);
@@ -350,7 +357,7 @@ app.post('/xdai', async function (req, res) {
 
 app.listen(8081, async () => {
   await banano.receive_deposits();
+  //nano receive deposits is expensive, avoid doing
   //await nano.receive_deposits();
-  //current node does not let us receive deposits
   console.log(`App on`)
 });
