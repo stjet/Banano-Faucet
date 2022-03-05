@@ -13,8 +13,6 @@ const banano = require('./banano.js');
 const nano = require('./nano.js');
 const mongo = require('./database.js');
 
-const xdai = require('./xdai.js');
-
 let db = mongo.getDb();
 let collection;
 //collection.find({}).forEach(console.dir)
@@ -70,7 +68,6 @@ const logging = false;
 const no_unopened = false;
 const faucet_addr = "ban_3346kkobb11qqpo17imgiybmwrgibr7yi34mwn5j6uywyke8f7fnfp94uyps";
 const faucet_addr_nano = "nano_3346kkobb11qqpo17imgiybmwrgibr7yi34mwn5j6uywyke8f7fnfp94uyps";
-const faucet_addr_xdai = "0x6e49e60f7228b6cc9883c89811266d212092a8aa"
 
 const blacklist = ["ban_3qyp5xjybqr1go8xb1847tr6e1ujjxdrc4fegt1rzhmcmbtntio385n35nju", "ban_1yozd3rq15fq9eazs91edxajz75yndyt5bpds1xspqfjoor9bdc1saqrph1w", "ban_1894qgm8jym5xohwkngsy5czixajk5apxsjowi83pz9g6zrfo1nxo4mmejm9", "ban_38jyaej59qs5x3zim7t4pw5dwixibkjw48tg1t3i9djyhtjf3au7c599bmg3", "ban_3a68aqticd6wup99zncicrbkuaonypzzkfmmn66bxexfmw1ckf3ewo3fmtm9", "ban_3f9j7bw9z71gwjo7bwgpfcmkg7k8w7y3whzc71881yrmpwz9e6c8g4gq4puj", "ban_3rdjcqpm3j88bunqa3ge69nzdzx5a6nqumzc4ei3t1uwg3ciczw75xqxb4ac", "ban_3w5uwibucuxh9psbpi9rp9qnikh9gywjc94cyp5rxirzsr5mtk5gbr5athoc", "ban_1pi3knekobemmas387mbq44f9iq9dzfmuodoyoxbs38eh5yqtjmy1imxop6m", "ban_1awbxp5y7r97hmc1oons5z5nirgyny7jenxcn33ehhzjmotf1pnuoopousur"]
 
@@ -292,68 +289,6 @@ app.post('/nano', async function (req, res) {
   await insert(address,String(Date.now()));
   return res.send(nunjucks.render('nano.html', {error: false, success: true}));
 });
-
-app.get('/xdai', async function (req, res) {
-  let errors = false;
-  let address = false;
-  let given = false;
-  //render template 
-  return res.send(nunjucks.render('xdai.html', {error: false, address: false, given: false, faucet_addr: faucet_addr_xdai}));
-})
-
-app.post('/xdai', async function (req, res) {
-  let address = req.body['addr'];
-
-  let current_bal = await nano.check_bal(faucet_addr_nano);
-  let amount = "0.001"; 
-
-  if (req.cookies['xdai_last_claim']) {
-    if (Number(req.cookies['xdai_last_claim'])+claim_freq > Date.now()) {
-      return res.send(nunjucks.render("xdai.html", {error: "Last claim too soon", address: address, given: false, faucet_addr: faucet_addr_xdai}));
-    }
-  }
-
-  let token = req.body['h-captcha-response'];
-  let params = new URLSearchParams();
-  params.append('response', token);
-  params.append('secret', process.env.secret);
-  let captcha_resp = await axios.post('https://hcaptcha.com/siteverify', params);
-  captcha_resp = captcha_resp.data;
-
-  if (!captcha_resp['success']) {
-    return res.send(nunjucks.render('xdai.html', {error: "Failed captcha", address: address, given: false, faucet_addr: faucet_addr_xdai}));
-  }
-
-  let dry = await xdai.faucet_dry(faucet_addr_xdai);
-
-  if (dry) {
-    return res.send(nunjucks.render('xdai.html', {error: "Faucet dry", address: address, given: false, faucet_addr: faucet_addr_xdai}));
-  }
-
-  let db_result = await find(address);
-  if (db_result) {
-    db_result = db_result['value'];
-    if (Number(db_result)+claim_freq < Date.now()) {
-      send = await xdai.send_xdai(address, amount);
-      if (send == false) {
-        return res.send(nunjucks.render('xdai.html', {error: "Send failed", address: address, given: false, faucet_addr: faucet_addr_xdai}));
-      }
-      res.cookie('xdai_last_claim', String(Date.now()));
-      await replace(address,String(Date.now()));
-      return res.send(nunjucks.render('xdai.html', {error: false, address: address, given: true, faucet_addr: faucet_addr_xdai}));
-    } else {
-      return res.send(nunjucks.render('xdai.html', {error: "Last claim too soon", address: address, given: false, faucet_addr: faucet_addr_xdai}));
-    }
-  }
-
-  send = await xdai.send_xdai(address, amount);
-  if (send == false) {
-    return res.send(nunjucks.render('xdai.html', {error: "Send Failed", address: address, given: false, faucet_addr: faucet_addr_xdai}));
-  }
-  res.cookie('xdai_last_claim', String(Date.now()));
-  await insert(address,String(Date.now()));
-  return res.send(nunjucks.render('xdai.html', {error: false, address: address, given: true, faucet_addr: faucet_addr_xdai}));
-})
 
 app.listen(8081, async () => {
   await banano.receive_deposits();
