@@ -17,7 +17,7 @@ async function get_account_history(addr) {
 async function check_bal(addr) {
   let raw_bal = await bananojs.getAccountBalanceRaw(addr);
   let bal_parts = await bananojs.getBananoPartsFromRaw(raw_bal);
-  return bal_parts.banano
+  return Number(bal_parts.banano)+Number(bal_parts.banoshi/100)
 }
 
 async function faucet_dry() {

@@ -17,12 +17,12 @@ async function get_account_history(addr) {
 async function check_bal(addr) {
   let raw_bal = await bananojs.getAccountBalanceRaw(addr);
   let bal_parts = await bananojs.getNanoPartsFromRaw(raw_bal);
-  return bal_parts
+  return Number(bal_parts.nano)+Number(bal_parts.nanoshi/100);
 }
 
 async function faucet_dry() {
   let bal = await check_bal("nano_3346kkobb11qqpo17imgiybmwrgibr7yi34mwn5j6uywyke8f7fnfp94uyps");
-  if (Number(bal.nanoshi) < 200 && Number(bal.nano) < 1) {
+  if (bal < 0.2) {
     return true;
   }
   return false;
