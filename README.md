@@ -1,3 +1,5 @@
+## Note: This project is archived! For a more up to date and cleaner version of the faucet, see [Faucet-v2](https://github.com/jetstream0/Faucet-v2)
+
 Hello! This is the code (under MIT License, so feel free to fork, I'd appreciate it if you credit me though) for the banano, nano, and xdai faucet at https://faucet.prussia.dev
 
 Just forked this? Interested in making your own faucet? Follow the steps below
